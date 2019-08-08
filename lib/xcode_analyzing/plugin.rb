@@ -8,9 +8,11 @@ module Danger
             return diff_files = (git.modified_files - git.deleted_files) + git.added_files
         end
 
+        attr_accessor :xcodebuild_workspace
         attr_accessor :xcodebuild_project
         attr_accessor :xcodebuild_scheme
         attr_accessor :xcodebuild_configuration
+        attr_accessor :xcodebuild_target_sdk
 
         attr_accessor :analyzedResultsDir
         def analyzedResultsDir
@@ -18,12 +20,32 @@ module Danger
         end
 
         def report
-            if xcodebuild_project.empty? && xcodebuild_scheme.empty?
-                warn("(- -;;) dangerプラグインのエラー", sticky: false)
+
+            if xcodebuild_configuration.nil? || xcodebuild_configuration.empty?
+                warn("(- -;;) cannot find configuration", sticky: false)
                 return
             end
 
-            system "xcodebuild analyze -project #{xcodebuild_project} -scheme #{xcodebuild_scheme} -configuration #{xcodebuild_configuration} CLANG_ANALYZER_OUTPUT=plist CLANG_ANALYZER_OUTPUT_DIR=\"$(pwd)/clang\""
+            if xcodebuild_scheme.nil? || xcodebuild_scheme.empty?
+                warn("(- -;;) cannot find scheme", sticky: false)
+                return
+            end
+
+            target_sdk = xcodebuild_target_sdk
+            if xcodebuild_target_sdk.nil? || xcodebuild_target_sdk.empty?
+                target_sdk = 'iphoneos'
+            end
+
+            if xcodebuild_workspace.nil? || xcodebuild_workspace.empty?
+                if xcodebuild_project.nil? || xcodebuild_project.empty?
+                    warn("(- -;;) cannot find workspace or xcodeproj", sticky: false)
+                    return
+                else
+                    system "xcodebuild analyze -project #{xcodebuild_project} -scheme #{xcodebuild_scheme} -configuration #{xcodebuild_configuration} -sdk #{target_sdk} CLANG_ANALYZER_OUTPUT=plist CLANG_ANALYZER_OUTPUT_DIR=\"$(pwd)/clang\""
+                end
+            else
+                system "xcodebuild analyze -workspace #{xcodebuild_workspace} -scheme #{xcodebuild_scheme} -configuration #{xcodebuild_configuration} -sdk #{target_sdk} CLANG_ANALYZER_OUTPUT=plist CLANG_ANALYZER_OUTPUT_DIR=\"$(pwd)/clang\""
+            end
 
             unless FileTest.exists? analyzedResultsDir
                 fail("(・A・)!! #{analyzedResultsDir}が見当たりません、ビルドに失敗しているか無効なディレクトリ指定です", sticky: false)
