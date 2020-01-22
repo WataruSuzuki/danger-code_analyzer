@@ -9,30 +9,10 @@ module Danger
         end
 
         attr_accessor :xcodebuild_workspace
-        def xcodebuild_workspace
-            return @xcodebuild_workspace
-        end
-
         attr_accessor :xcodebuild_project
-        def xcodebuild_project
-            return @xcodebuild_project
-        end
-
         attr_accessor :xcodebuild_scheme
-        def xcodebuild_scheme
-            return @xcodebuild_scheme
-        end
-
         attr_accessor :xcodebuild_configuration
-        def xcodebuild_configuration
-            return @xcodebuild_configuration
-        end
-
         attr_accessor :xcodebuild_target_sdk
-        def xcodebuild_target_sdk
-            return @xcodebuild_target_sdk
-        end
-
 
         attr_accessor :analyzedResultsDir
         def analyzedResultsDir
