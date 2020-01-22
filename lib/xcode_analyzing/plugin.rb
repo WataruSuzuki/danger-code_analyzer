@@ -16,7 +16,7 @@ module Danger
 
         attr_accessor :analyzedResultsDir
         def analyzedResultsDir
-            return 'clang/' + @analyzedResultsDir
+            return @analyzedResultsDir
         end
 
         def report
