@@ -9,6 +9,7 @@ module Danger
         end
 
         attr_accessor :xcodebuild_workspace
+        attr_accessor :xcodebuild_project_dir
         attr_accessor :xcodebuild_project
         attr_accessor :xcodebuild_scheme
         attr_accessor :xcodebuild_configuration
@@ -34,6 +35,10 @@ module Danger
             target_sdk = xcodebuild_target_sdk
             if xcodebuild_target_sdk.nil? || xcodebuild_target_sdk.empty?
                 target_sdk = 'iphoneos'
+            end
+
+            if !xcodebuild_project_dir.nil? && !xcodebuild_project_dir.empty?
+                system "cd #{xcodebuild_project_dir}"
             end
 
             if xcodebuild_workspace.nil? || xcodebuild_workspace.empty?
