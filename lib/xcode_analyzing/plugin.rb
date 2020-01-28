@@ -37,7 +37,9 @@ module Danger
                 target_sdk = 'iphoneos'
             end
 
-            if !xcodebuild_project_dir.nil? && !xcodebuild_project_dir.empty?
+            if xcodebuild_project_dir.nil? || xcodebuild_project_dir.empty?
+                puts "xcode project is root."
+            else
                 system "cd #{xcodebuild_project_dir}"
             end
 
